@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -10,8 +11,12 @@ import Textarea from "../../ui/Textarea";
 import { createCabin } from "../../services/apiCabins";
 import FormRow from "../../ui/FormRow";
 
-function CreateCabinForm() {
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+function CreateCabinForm({ cabinToEdit = {} }) {
+  const { id: editId, ...editValues } = cabinToEdit;
+
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: editId ? editValues : {},
+  });
   const { errors } = formState;
 
   const queryClient = useQueryClient();
@@ -41,7 +46,7 @@ function CreateCabinForm() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
-      <FormRow label="Cabin Name" errors={errors?.name?.message}>
+      <FormRow label="Cabin Name" error={errors?.name?.message}>
         <Input
           type="text"
           disabled={isCreating}
@@ -50,7 +55,7 @@ function CreateCabinForm() {
         />
       </FormRow>
 
-      <FormRow label="Maximum capacity" errors={errors?.name?.message}>
+      <FormRow label="Maximum capacity" error={errors?.maxCapacity?.message}>
         <Input
           type="number"
           id="maxCapacity"
@@ -65,7 +70,7 @@ function CreateCabinForm() {
         />
       </FormRow>
 
-      <FormRow label="Regular price" errors={errors?.name?.message}>
+      <FormRow label="Regular price" error={errors?.regularPrice?.message}>
         <Input
           type="number"
           id="regularPrice"
@@ -80,7 +85,7 @@ function CreateCabinForm() {
         />
       </FormRow>
 
-      <FormRow label="Discount" errors={errors?.name?.message}>
+      <FormRow label="Discount" error={errors?.discount?.message}>
         <Input
           type="number"
           id="discount"
@@ -88,14 +93,15 @@ function CreateCabinForm() {
           disabled={isCreating}
           {...register("discount", {
             required: "This field is required.",
-            validate: (value) =>
-              value <= getValues().regularPrice ||
-              "Discount should be less than the regular price",
+            max: {
+              value: getValues().regularPrice,
+              message: "Discount should be less than the regular price",
+            },
           })}
         />
       </FormRow>
 
-      <FormRow label="Description" errors={errors?.name?.message}>
+      <FormRow label="Description" error={errors?.description?.message}>
         <Textarea
           type="number"
           id="description"
@@ -105,11 +111,13 @@ function CreateCabinForm() {
         />
       </FormRow>
 
-      <FormRow label="Cabin Photo">
+      <FormRow label="Cabin Photo" error={errors?.image?.message}>
         <FileInput
           id="image"
           accept="image/*"
-          {...register("image", { required: "This field is required." })}
+          {...register("image", {
+            required: editId ? false : "This field is required.",
+          })}
         />
       </FormRow>
 
@@ -117,10 +125,14 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isCreating}>Add</Button>
+        <Button disabled={isCreating}>{editId ? "Update" : "Add"}</Button>
       </FormRow>
     </Form>
   );
 }
+
+CreateCabinForm.propTypes = {
+  cabinToEdit: PropTypes.object,
+};
 
 export default CreateCabinForm;
