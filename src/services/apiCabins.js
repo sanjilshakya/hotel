@@ -41,16 +41,44 @@ export async function createCabin(newCabin) {
   return data;
 }
 
-export async function updateCabin(id, fields) {
+export async function updateCabin(id, updatedCabin) {
+  const isNewImage = updatedCabin.image?.startsWith?.(supabaseUrl)
+    ? false
+    : true;
+
+  const imageName = isNewImage
+    ? `${Math.random()}-${updatedCabin.image.name}`.replaceAll("/", "")
+    : "";
+
+  const imagePath = isNewImage
+    ? `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`
+    : updatedCabin.image;
+
   const { data, error } = await supabase
     .from("cabins")
-    .update(fields)
+    .update({ ...updatedCabin, image: imagePath })
     .eq("id", id)
-    .select();
+    .select()
+    .single();
 
   if (error) {
     console.log(error);
     throw new Error("Cabin could not be updated");
+  }
+  //upload the image
+  if (isNewImage) {
+    const { error: storageError } = await supabase.storage
+      .from("cabin-images")
+      .upload(imageName, updatedCabin.image);
+
+    //delete the cabin if there was an error uploading the image
+    if (storageError) {
+      await supabase.from("cabins").delete().eq("id", data.id);
+      console.log(error);
+      throw new Error(
+        "Cabin image could not be uploaded and cabin was not created"
+      );
+    }
   }
   return data;
 }

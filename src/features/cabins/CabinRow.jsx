@@ -73,7 +73,11 @@ function CabinRow({ cabin }) {
         <Cabin>{name}</Cabin>
         <div>{maxCapacity}</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>-</span>
+        )}
         <Row type="horizontal">
           <button
             onClick={() => setShowForm((show) => !show)}
