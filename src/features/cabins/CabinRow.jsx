@@ -1,11 +1,12 @@
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import Row from "../../ui/Row";
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 
 const TableRow = styled.div`
