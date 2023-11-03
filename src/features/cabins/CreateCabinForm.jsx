@@ -11,7 +11,7 @@ import FormRow from "../../ui/FormRow";
 import { useCreateCabin } from "./useCreateCabin";
 import { useUpdateCabin } from "./useUpdateCabin";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const { isCreating, createMutate } = useCreateCabin();
   const { isUpdating, updateMutate } = useUpdateCabin();
@@ -27,9 +27,22 @@ function CreateCabinForm({ cabinToEdit = {} }) {
     editId
       ? updateMutate(
           { updatedCabin: { ...data, image }, editId },
-          { onSuccess: (data) => reset() }
+          {
+            onSuccess: (data) => {
+              reset();
+              onCloseModal?.();
+            },
+          }
         )
-      : createMutate({ ...data, image }, { onSuccess: (data) => reset() });
+      : createMutate(
+          { ...data, image },
+          {
+            onSuccess: (data) => {
+              reset();
+              onCloseModal?.();
+            },
+          }
+        );
   }
 
   function onError(errors) {
@@ -37,7 +50,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Cabin Name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -114,7 +130,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
       </FormRow>
 
       <FormRow>
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isCreating || isUpdating}>
@@ -127,6 +147,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
 CreateCabinForm.propTypes = {
   cabinToEdit: PropTypes.object,
+  onCloseModal: PropTypes.func,
 };
 
 export default CreateCabinForm;
