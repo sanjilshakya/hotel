@@ -14,8 +14,8 @@ function CabinTable() {
     filterValue === "all" || !filterValue
       ? cabins
       : filterValue === "no-discount"
-      ? cabins.filter((cabin) => cabin.discount === 0)
-      : cabins.filter((cabin) => cabin.discount >= 0);
+      ? cabins?.filter((cabin) => cabin.discount === 0)
+      : cabins?.filter((cabin) => cabin.discount > 0);
   if (isLoading) return <Spinner />;
   return (
     <Menus>
