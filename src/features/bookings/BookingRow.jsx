@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { format, isToday } from "date-fns";
 
 import Tag from "../../ui/Tag";
@@ -34,10 +36,10 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
-function BookingRow({
-  booking: {
+function BookingRow({ booking }) {
+  const {
     id: bookingId,
-    created_at,
+    createdAt,
     startDate,
     endDate,
     numNights,
@@ -46,8 +48,8 @@ function BookingRow({
     status,
     guests: { fullName: guestName, email },
     cabins: { name: cabinName },
-  },
-}) {
+  } = booking;
+
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -82,5 +84,9 @@ function BookingRow({
     </Table.Row>
   );
 }
+
+BookingRow.propTypes = {
+  booking: PropTypes.object,
+};
 
 export default BookingRow;
