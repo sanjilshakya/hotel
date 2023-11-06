@@ -6,6 +6,9 @@ export default function useBookings() {
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get("status");
   const sortBy = searchParams.get("sortBy") || "createdAt-asc";
+  const page = !searchParams?.get("page")
+    ? 1
+    : Number(searchParams.get("page"));
   const [sortByField, sortDirection] = sortBy.split("-");
   const sort = { sortByField, sortDirection };
 
@@ -15,12 +18,12 @@ export default function useBookings() {
       : { field: "status", value: filterValue, method: "eq" };
 
   const {
-    data: bookings,
+    data: { bookings, count } = {},
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["bookings", filter, sort],
-    queryFn: () => getBookings({ filter, sort }),
+    queryKey: ["bookings", filter, sort, page],
+    queryFn: () => getBookings({ filter, sort, page }),
   });
-  return { bookings, error, isLoading };
+  return { bookings, count, error, isLoading };
 }
