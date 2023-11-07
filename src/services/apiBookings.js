@@ -99,10 +99,10 @@ export async function getStaysTodayActivity() {
   return data;
 }
 
-export async function updateBooking(id, obj) {
+export async function updateBooking(id, updatedBookingData) {
   const { data, error } = await supabase
     .from("bookings")
-    .update(obj)
+    .update(updatedBookingData)
     .eq("id", id)
     .select()
     .single();

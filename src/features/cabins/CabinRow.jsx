@@ -103,23 +103,6 @@ function CabinRow({ cabin }) {
             </Modal.Window>
           </Menus.Menu>
         </Modal>
-
-        {/* <Menus.Menu>
-          <Menus.Toggle id={id} />
-          <Menus.List id={id}>
-            <Menus.Button
-              icon={<HiSquare2Stack />}
-              onClick={handleDuplicate}
-              disabled={isCreating}
-            >
-              Duplicate
-            </Menus.Button>
-
-            <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
-
-            <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
-          </Menus.List>
-        </Menus.Menu> */}
       </Row>
     </Table.Row>
   );
