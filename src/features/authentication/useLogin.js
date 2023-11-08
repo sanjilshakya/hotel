@@ -13,7 +13,7 @@ export function useLogin() {
       toast.success("Login successful.");
       // just optional so that when user is redirect to dashboard, no need to fetch current user from useUser()
       queryClient.setQueryData(["user"], () => data.user);
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     },
     onError: (err) => {
       console.log(err);
