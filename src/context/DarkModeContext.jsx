@@ -7,6 +7,12 @@ const DarkModeContext = createContext();
 function DarkModeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useLocalStorageState(false, "darkMode");
 
+  // instead of using default as false, we can check if the user's OS has default dark mode
+  // const [isDarkMode, setIsDarkMode] = useLocalStorageState(
+  //   window.matchMedia("prefers-color-scheme: dark").matches,
+  //   "darkMode"
+  // );
+
   function toggleDarkMode() {
     setIsDarkMode((isDark) => !isDark);
   }
