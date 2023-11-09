@@ -10,16 +10,16 @@ function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUser, isUpdating } = useUpdateUser();
+  const { update, isUpdating } = useUpdateUser();
 
   function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
+    update({ password }, { onSuccess: reset });
   }
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow
-        label="Password (min 8 characters)"
+        label="New Password (min 8 characters)"
         error={errors?.password?.message}
       >
         <Input
