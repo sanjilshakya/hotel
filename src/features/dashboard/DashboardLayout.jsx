@@ -1,4 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 import styled from "styled-components";
+import { useRecentBookings } from "./useRecentBookings";
+import Spinner from "../../ui/Spinner";
+import { useRecentStays } from "./useRecentStays";
+import { useTodayActivity } from "./useTodayAcivity";
+import Stats from "./Stats";
+import { useCabins } from "../cabins/useCabins";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
@@ -6,3 +14,25 @@ const StyledDashboardLayout = styled.div`
   grid-template-rows: auto 34rem auto;
   gap: 2.4rem;
 `;
+
+function DashboardLayout() {
+  const { recentBookings, isLoading: isLoading1, days } = useRecentBookings();
+  const { stays, confirmedStays, isLoading: isLoading2 } = useRecentStays();
+  const { activities, isLoading: isLoading3 } = useTodayActivity();
+  const { cabins, isLoading: isLoading4 } = useCabins();
+
+  if (isLoading1 || isLoading2 || isLoading3 || isLoading4) return <Spinner />;
+
+  return (
+    <StyledDashboardLayout>
+      <Stats
+        bookings={recentBookings}
+        confirmedStays={confirmedStays}
+        days={days}
+        cabinsCount={cabins.length}
+      />
+    </StyledDashboardLayout>
+  );
+}
+
+export default DashboardLayout;
